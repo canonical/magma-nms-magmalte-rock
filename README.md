@@ -1,0 +1,1 @@
+# magma-nms-magmalte-rock
