@@ -1,29 +1,13 @@
 name: magma-orc8r-nms-magmalte
-version: "1.6.1"
-base: ubuntu:18.04
+version: "1.8.0"
+base: ubuntu:22.04
 summary: Magma Orchestrator NMS Magmalte
 description: Magma Orcestrator NMS Magmalte
 license: Apache-2.0
 platforms:
   amd64:
 
-cmd: ["/bin/yarn", "run", "--cwd=/usr/src/packages/magmalte/", "start:prod"]
-
-env:
-  - MYSQL_HOST: postgres
-  - MYSQL_PORT: 5432
-  - MYSQL_DB: magma
-  - MYSQL_USER: username
-  - MYSQL_PASS: password
-  - MYSQL_DIALECT: postgres
-  - MAPBOX_ACCESS_TOKEN: ""
-  - PUPPETEER_SKIP_DOWNLOAD: true
-  - USER_GRAFANA_ADDRESS: http://grafana.local
-  - API_CERT_FILENAME: /run/secrets/admin_operator.pem
-  - API_PRIVATE_KEY_FILENAME: /run/secrets/admin_operator.key.pem
-  - API_HOST: orc8r-nginx-proxy.my_namespace.svc.cluster.local
-  - PORT: 8081
-  - HOST: 0.0.0.0
+cmd: ["/bin/yarn", "run", "start:prod"]
 
 parts:
 
@@ -31,38 +15,35 @@ parts:
     plugin: nil
     source: https://github.com/magma/magma
     source-type: git
-    source-tag: v1.6.1
+    source-tag: v1.8.0
     build-environment:
       - PUPPETEER_SKIP_DOWNLOAD: "true"
     build-snaps:
-      - node/12/stable
-    organize:
-      nms/app/packages/magmalte/wait-for-it.sh: usr/local/bin/wait-for-it.sh
+      - node/16/stable
     override-build: |
       set -x
       npm install --global yarn
 
       # Install dependencies
-      mkdir -p ${CRAFT_PART_INSTALL}/usr/src/packages/magmalte/
-      mkdir -p ${CRAFT_PART_INSTALL}/usr/src/packages/fbcnms-magma-api/
-      cp ${CRAFT_PART_SRC}/nms/app/package.json ${CRAFT_PART_SRC}/nms/app/yarn.lock ${CRAFT_PART_SRC}/nms/app/babel.config.js ${CRAFT_PART_INSTALL}/usr/src/
-      cp ${CRAFT_PART_SRC}/nms/app/packages/magmalte/package.json ${CRAFT_PART_INSTALL}/usr/src/packages/magmalte/
-      cp ${CRAFT_PART_SRC}/nms/app/packages/fbcnms-magma-api/package.json ${CRAFT_PART_INSTALL}/usr/src/packages/fbcnms-magma-api/
-      cd ${CRAFT_PART_INSTALL}/usr/src/
+      mkdir -p ${CRAFT_PART_INSTALL}/
+      mkdir -p ${CRAFT_PART_INSTALL}/usr/local/bin/
+      cp ${CRAFT_PART_SRC}/nms/wait-for-it.sh ${CRAFT_PART_INSTALL}/usr/local/bin/
+      cp ${CRAFT_PART_SRC}/nms/package.json ${CRAFT_PART_SRC}/nms/yarn.lock ${CRAFT_PART_SRC}/nms/babel.config.js ${CRAFT_PART_INSTALL}/
+      cd ${CRAFT_PART_INSTALL}/
       yarn install --mutex network --frozen-lockfile
       yarn cache clean
 
       # Build
-      cp -rf ${CRAFT_PART_SRC}/nms/app/packages/magmalte/* ${CRAFT_PART_INSTALL}/usr/src/packages/magmalte/
-      cp -rf ${CRAFT_PART_SRC}/nms/app/packages/fbcnms-magma-api/* ${CRAFT_PART_INSTALL}/usr/src/packages/fbcnms-magma-api/
-      cd ${CRAFT_PART_INSTALL}/usr/src/packages/magmalte
+      cp -rf ${CRAFT_PART_SRC}/nms/* ${CRAFT_PART_INSTALL}/
+      cd ${CRAFT_PART_INSTALL}/
       yarn run build
 
     override-stage: |
       set -x
-      curl -s https://nodejs.org/dist/v10.24.1/node-v10.24.1-linux-x64.tar.gz | tar xzf - -C ${CRAFT_PART_INSTALL}/ --no-same-owner --strip-components=1
+      curl -s https://nodejs.org/dist/v16.14.1/node-v16.14.1-linux-x64.tar.gz | tar xzf - -C ${CRAFT_PART_INSTALL}/ --no-same-owner --strip-components=1
       npm install yarn --global
       craftctl default
+      # ln -s /node_modules/yarn/bin/yarn /usr/local/bin/yarn
 
   busybox:
     plugin: nil
@@ -71,7 +52,7 @@ parts:
       - make
       - gcc
     stage-packages:
-      - libc6_libs
+      - libc6
     override-build: |
       mkdir -p $CRAFT_PART_INSTALL/bin/
       make defconfig
