@@ -9,6 +9,6 @@ Rock for Magma's orchestrator NMS service built using
 ## Usage
 
 ```bash
-docker pull ghcr.io/gruyaume/magma-orc8r-nms-magmalte:1.6.0
-docker run -it ghcr.io/gruyaume/magma-orc8r-nms-magmalte:1.6.0
+docker pull ghcr.io/gruyaume/magma-orc8r-nms-magmalte:1.8.0
+docker run -it ghcr.io/gruyaume/magma-orc8r-nms-magmalte:1.8.0
 ```
