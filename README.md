@@ -1,8 +1,8 @@
 # Magma Orchestrator NMS Rock
 
-Rock for Magma's orchestrator NMS service built using 
+Rock for Magma Orchestrator's NMS service built using 
 [rockcraft](https://github.com/canonical/rockcraft). It provides a direct port of this 
-[Dockerfile](https://github.com/magma/magma/blob/v1.6/nms/app/packages/magmalte/Dockerfile).
+[Dockerfile](https://github.com/magma/magma/blob/v1.8/nms/app/packages/magmalte/Dockerfile).
 
 ## Usage
 
