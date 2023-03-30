@@ -6,11 +6,11 @@
 
 import unittest
 from pathlib import Path
+from time import sleep
 
 import docker  # type: ignore[import]
 import requests
 import yaml
-from time import sleep
 
 MAGMALTE_DOCKER_URL = "http://localhost"
 MAGMALTE_DOCKER_PORT = 8081
@@ -84,7 +84,7 @@ class TestNmsMagmalteRock(unittest.TestCase):
         self,
     ):
         """Test to validate that the container is running correctly."""
-        sleep(10)
+        sleep(60)
         response = requests.get(
             f"{MAGMALTE_DOCKER_URL}:{MAGMALTE_DOCKER_PORT}{MAGMALTE_LOGIN_PAGE}"  # noqa: E501
         )
