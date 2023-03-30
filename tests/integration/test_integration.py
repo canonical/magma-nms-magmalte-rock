@@ -10,6 +10,7 @@ from pathlib import Path
 import docker  # type: ignore[import]
 import requests
 import yaml
+from time import sleep
 
 MAGMALTE_DOCKER_URL = "http://localhost"
 MAGMALTE_DOCKER_PORT = 8081
@@ -64,7 +65,7 @@ class TestNmsMagmalteRock(unittest.TestCase):
         magmalte_container = self.client.containers.run(
             f"ghcr.io/canonical/{image_name}:{version}",
             detach=True,
-            ports={"10112/tcp": 8081},
+            ports={"8080/tcp": 8081},
             name="app_container",
             environment={
                 "PORT": "8080",
@@ -83,6 +84,7 @@ class TestNmsMagmalteRock(unittest.TestCase):
         self,
     ):
         """Test to validate that the container is running correctly."""
+        sleep(10)
         response = requests.get(
             f"{MAGMALTE_DOCKER_URL}:{MAGMALTE_DOCKER_PORT}{MAGMALTE_LOGIN_PAGE}"  # noqa: E501
         )
