@@ -12,8 +12,8 @@ import docker  # type: ignore[import]
 import requests
 import yaml
 
-#MAGMALTE_DOCKER_URL = "http://172.17.0.3"
-MAGMALTE_DOCKER_PORT = 8080
+MAGMALTE_DOCKER_URL = "http://localhost"
+MAGMALTE_DOCKER_PORT = 8081
 MAGMALTE_LOGIN_PAGE = "/user/login"
 POSTGRES_USER = "username"
 POSTGRES_PASSWORD = "password"
@@ -85,10 +85,7 @@ class TestNmsMagmalteRock(unittest.TestCase):
     ):
         """Test to validate that the container is running correctly."""
         sleep(10)
-        container = self.client.containers.get('app_container')
-        container_info = self.client.api.inspect_container(container.id)
-        container_ip = container_info["NetworkSettings"]["Networks"]["bridge"]["IPAddress"]
         response = requests.get(
-            f"http://{container_ip}:{MAGMALTE_DOCKER_PORT}{MAGMALTE_LOGIN_PAGE}"  # noqa: E501
+            f"{MAGMALTE_DOCKER_URL}:{MAGMALTE_DOCKER_PORT}{MAGMALTE_LOGIN_PAGE}"  # noqa: E501
         )
         assert response.status_code == 200
