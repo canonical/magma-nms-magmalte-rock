@@ -4,17 +4,16 @@
 
 """Integration tests for the nms-magmalte rock."""
 
-import docker  # type: ignore[import]
-import yaml
-import requests  # type: ignore[import]
+import unittest
 from pathlib import Path
 
+import docker  # type: ignore[import]
+import requests  # type: ignore[import]
+import yaml
 
-import unittest
-
-MAGMALTE_DOCKER_URL = 'http://localhost'
+MAGMALTE_DOCKER_URL = "http://localhost"
 MAGMALTE_DOCKER_PORT = 8081
-MAGMALTE_RESOURCE = '/user/login'
+MAGMALTE_LOGIN_PAGE = "/user/login"
 POSTGRES_USER = "username"
 POSTGRES_PASSWORD = "password"
 POSTGRES_DB = "magma"
@@ -49,7 +48,7 @@ class TestNmsMagmalteRock(unittest.TestCase):
             environment={
                 "POSTGRES_PASSWORD": POSTGRES_PASSWORD,
                 "POSTGRES_USER": POSTGRES_USER,
-                "POSTGRES_DB": POSTGRES_DB
+                "POSTGRES_DB": POSTGRES_DB,
             },
             name="postgres_container",
         )
@@ -68,22 +67,23 @@ class TestNmsMagmalteRock(unittest.TestCase):
             ports={"10112/tcp": 8081},
             name="app_container",
             environment={
-                "PORT": '8080',
-                "HOST": '0.0.0.0',
-                "MYSQL_DIALECT": 'postgres',
+                "PORT": "8080",
+                "HOST": "0.0.0.0",
+                "MYSQL_DIALECT": "postgres",
                 "MYSQL_PASS": POSTGRES_PASSWORD,
                 "MYSQL_USER": POSTGRES_USER,
                 "MYSQL_DB": POSTGRES_DB,
-                "MYSQL_PORT": '5432',
-                "MYSQL_HOST": 'postgres_container'
+                "MYSQL_PORT": "5432",
+                "MYSQL_HOST": "postgres_container",
             },
         )
         self.network.connect(magmalte_container)
 
     def test_given_nms_magmalte_container_is_running_when_http_get_then_hello_message_is_returned(  # noqa: E501
-        self
+        self,
     ):
+        """Test to validate that the container is running correctly."""
         response = requests.get(
-            f"{MAGMALTE_DOCKER_URL}:{MAGMALTE_DOCKER_PORT}{MAGMALTE_RESOURCE}"
+            f"{MAGMALTE_DOCKER_URL}:{MAGMALTE_DOCKER_PORT}{MAGMALTE_LOGIN_PAGE}"  # noqa: E501
         )
         assert response.status_code == 200
