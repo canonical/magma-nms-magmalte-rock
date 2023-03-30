@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 import docker  # type: ignore[import]
-import requests  # type: ignore[import]
+import requests
 import yaml
 
 MAGMALTE_DOCKER_URL = "http://localhost"
@@ -32,13 +32,13 @@ class TestNmsMagmalteRock(unittest.TestCase):
     def setUp(self) -> None:
         """Run containers to test."""
         super().setUp()
-        self._run_postgres_container()
-        self._run_magmalte_container()
         self.client = docker.from_env()
         self.network = self.client.networks.create(
             "bridge_network",
             driver="bridge",
         )
+        self._run_postgres_container()
+        self._run_magmalte_container()
 
     def _run_postgres_container(self):
         postgres_container = self.client.containers.run(
