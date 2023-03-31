@@ -32,7 +32,6 @@ class TestNmsMagmalteRock(unittest.TestCase):
 
     def setUp(self) -> None:
         """Run containers to test."""
-        super().setUp()
         self.client = docker.from_env()
         self.network = self.client.networks.create(
             "bridge_network",
@@ -84,8 +83,14 @@ class TestNmsMagmalteRock(unittest.TestCase):
         self,
     ):
         """Test to validate that the container is running correctly."""
-        sleep(10)
-        response = requests.get(
-            f"{MAGMALTE_DOCKER_URL}:{MAGMALTE_DOCKER_PORT}{MAGMALTE_LOGIN_PAGE}"  # noqa: E501
-        )
-        assert response.status_code == 200
+        url = f"{MAGMALTE_DOCKER_URL}:{MAGMALTE_DOCKER_PORT}{MAGMALTE_LOGIN_PAGE}"  # noqa: E501
+        for _ in range(60):
+            try:
+                response = requests.get(url)
+                if response.status_code == 200:
+                    break
+            except requests.exceptions.RequestException:
+                pass
+            sleep(1)
+        else:
+            assert False, "Failed to get a 200 response within 10 seconds."
