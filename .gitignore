@@ -5,5 +5,5 @@
 **/venv/**
 *.pyc
 
-# Charmcraft
+# Rockcraft
 *.rock

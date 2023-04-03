@@ -84,7 +84,7 @@ class TestNmsMagmalteRock(unittest.TestCase):
     ):
         """Test to validate that the container is running correctly."""
         url = f"{MAGMALTE_DOCKER_URL}:{MAGMALTE_DOCKER_PORT}{MAGMALTE_LOGIN_PAGE}"  # noqa: E501
-        for _ in range(60):
+        for _ in range(30):
             try:
                 response = requests.get(url)
                 if response.status_code == 200:
