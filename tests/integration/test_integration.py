@@ -18,13 +18,6 @@ MAGMALTE_LOGIN_PAGE = "/user/login"
 POSTGRES_USER = "username"
 POSTGRES_PASSWORD = "password"
 POSTGRES_DB = "magma"
-DATABASE_SOURCE = f"""
-    dbname=magma
-    user={POSTGRES_USER}
-    password={POSTGRES_PASSWORD}
-    host=postgres_container
-    sslmode=disable
-"""
 
 
 class TestNmsMagmalteRock(unittest.TestCase):
