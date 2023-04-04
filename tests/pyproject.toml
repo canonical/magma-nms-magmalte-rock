@@ -38,15 +38,6 @@ explicit_package_bases = true
 check_untyped_defs = true
 allow_redefinition = true
 
-# Ignore libraries that do not have type hint nor stubs
-[[tool.mypy.overrides]]
-module = ["ops.*", "kubernetes.*", "flatten_json.*", "git.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["charms.*"]
-follow_imports = "silent"
-
 [tool.pytest.ini_options]
 minversion = "6.0"
 log_cli_level = "INFO"
