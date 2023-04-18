@@ -7,11 +7,6 @@ license: Apache-2.0
 platforms:
   amd64:
 
-services:
-  nms:
-    override: replace
-    command: /bin/yarn run start:prod
-
 parts:
 
   magma-nms-magmalte:

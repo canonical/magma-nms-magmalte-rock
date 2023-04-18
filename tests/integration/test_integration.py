@@ -69,6 +69,7 @@ class TestNmsMagmalteRock(unittest.TestCase):
                 "MYSQL_PORT": "5432",
                 "MYSQL_HOST": "postgres_container",
             },
+            command="/bin/yarn run start:prod",
         )
         self.network.connect(magmalte_container)
 
