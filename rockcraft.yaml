@@ -7,7 +7,19 @@ license: Apache-2.0
 platforms:
   amd64:
 
-cmd: ["/bin/yarn", "run", "start:prod"]
+services:
+  nms:
+    override: replace
+    command: yarn run start:prod
+    environment:
+      PORT: 8080
+      HOST: 0.0.0.0
+      MYSQL_DIALECT: postgres
+      MYSQL_PASS: password
+      MYSQL_USER: username
+      MYSQL_DB: magma
+      MYSQL_PORT: 5432
+      MYSQL_HOST: postgres_container
 
 parts:
 

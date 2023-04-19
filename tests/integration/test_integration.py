@@ -4,13 +4,16 @@
 
 """Integration tests for the nms-magmalte rock."""
 
+import logging
+import time
 import unittest
 from pathlib import Path
-from time import sleep
 
 import docker  # type: ignore[import]
 import requests
 import yaml
+
+logger = logging.getLogger(__name__)
 
 MAGMALTE_DOCKER_URL = "http://localhost"
 MAGMALTE_DOCKER_PORT = 8081
@@ -58,17 +61,8 @@ class TestNmsMagmalteRock(unittest.TestCase):
             f"ghcr.io/canonical/{image_name}:{version}",
             detach=True,
             ports={"8080/tcp": 8081},
+            command="start nms",
             name="app_container",
-            environment={
-                "PORT": "8080",
-                "HOST": "0.0.0.0",
-                "MYSQL_DIALECT": "postgres",
-                "MYSQL_PASS": POSTGRES_PASSWORD,
-                "MYSQL_USER": POSTGRES_USER,
-                "MYSQL_DB": POSTGRES_DB,
-                "MYSQL_PORT": "5432",
-                "MYSQL_HOST": "postgres_container",
-            },
         )
         self.network.connect(magmalte_container)
 
@@ -77,13 +71,15 @@ class TestNmsMagmalteRock(unittest.TestCase):
     ):
         """Test to validate that the container is running correctly."""
         url = f"{MAGMALTE_DOCKER_URL}:{MAGMALTE_DOCKER_PORT}{MAGMALTE_LOGIN_PAGE}"  # noqa: E501
-        for _ in range(30):
+        initial_time = time.time()
+        timeout = 30
+        while time.time() - initial_time < timeout:
             try:
                 response = requests.get(url)
-                if response.status_code == 200:
-                    break
-            except requests.exceptions.RequestException:
+                assert response.status_code == 200
+                return
+            except requests.exceptions.ConnectionError:
+                logger.info(f"Connection error when reaching {url}, will retry")
                 pass
-            sleep(1)
-        else:
-            assert False, "Failed to get a 200 response within 10 seconds."
+            time.sleep(1)
+        raise TimeoutError(f"Failed to get a 200 response within {timeout} seconds.")
